@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neeraj Expense Tracker - Student Edition</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center;">
+            <h1 class="brand-title">Neeraj <span>Expense Tracker</span></h1>
+            <span class="student-tag">Student Edition</span>
+          </div>
+          <p class="brand-tagline">Smart Pocket Money, Advance Expenses & Debit Tracker</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Currency Selector -->
+        <div class="currency-selector" title="Select Currency">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <select id="currency-select">
+            <option value="INR" data-symbol="₹" selected>INR (₹)</option>
+            <option value="USD" data-symbol="$">USD ($)</option>
+            <option value="EUR" data-symbol="€">EUR (€)</option>
+            <option value="GBP" data-symbol="£">GBP (£)</option>
+            <option value="CAD" data-symbol="CA$">CAD ($)</option>
+            <option value="AUD" data-symbol="AU$">AUD ($)</option>
+            <option value="JPY" data-symbol="¥">JPY (¥)</option>
+            <option value="AED" data-symbol="AED ">AED (د.إ)</option>
+          </select>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" class="theme-toggle" title="Toggle Dark/Light Mode">
+          <svg id="theme-moon-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="theme-sun-icon" style="display:none;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <span id="theme-text">Dark</span>
+        </button>
+
+        <!-- Data Tools (Export/Import/Demo) -->
+        <button id="btn-open-data-modal" class="btn-header" title="Data Backup & Export">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Backup</span>
+        </button>
+
+        <!-- ADVANCE EXPENSE BUTTON -->
+        <button id="btn-open-advance-modal" class="btn-advance" title="Add Upcoming / Advance Expense Checklist">
+          <span>⏱️ + Advance Expense</span>
+        </button>
+
+        <!-- Primary Add Expense Button -->
+        <button id="btn-open-add-modal" class="btn-primary" title="Log an instant expense">
+          <span>+ Add Expense</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- KEY STUDENT FINANCIAL METRICS -->
+    <section class="metrics-grid">
+      <!-- Pocket Money / Monthly Allowance -->
+      <div class="metric-card pocket-money">
+        <div class="metric-header">
+          <span class="metric-title">Pocket Money Balance</span>
+          <button id="btn-edit-allowance" class="btn-icon-action" title="Set Monthly Pocket Money / Allowance">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="metric-value pocket" id="val-pocket-remaining">₹0.00</div>
+        <div>
+          <div class="progress-container">
+            <div id="allowance-progress-bar" class="progress-bar success" style="width: 0%;"></div>
+          </div>
+          <div class="metric-footer" style="margin-top:0.3rem;">
+            <span id="badge-allowance-spent" class="badge badge-success">0% Spent</span>
+            <span id="label-allowance-total" style="color:var(--text-secondary);">Allowance: ₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Expenses (Debits) -->
+      <div class="metric-card total-expense">
+        <div class="metric-header">
+          <span class="metric-title">Total Expenses (Debits)</span>
+          <div class="metric-icon expense">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value expense" id="val-total-expense">₹0.00</div>
+        <div class="metric-footer">
+          <span id="badge-expense-count" class="badge badge-danger">0 Logged</span>
+          <span id="label-expense-this-month">This month: ₹0.00</span>
+        </div>
+      </div>
+
+      <!-- Daily Safe Spend Limit (Advanced Student Tool) -->
+      <div class="metric-card daily-safe-limit">
+        <div class="metric-header">
+          <span class="metric-title">Safe Daily Spend</span>
+          <div class="metric-icon safe-limit">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value safe-limit" id="val-daily-safe-limit">₹0.00 / day</div>
+        <div class="metric-footer">
+          <span id="badge-days-remaining" class="badge badge-purple">0 Days Left</span>
+          <span>Stay under this!</span>
+        </div>
+      </div>
+
+      <!-- Average Daily Spend -->
+      <div class="metric-card daily-avg">
+        <div class="metric-header">
+          <span class="metric-title">Daily Average Burn</span>
+          <div class="metric-icon daily-avg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 20V10"></path>
+              <path d="M12 20V4"></path>
+              <path d="M6 20v-6"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="metric-value" id="val-daily-avg" style="color:var(--warning);">₹0.00 / day</div>
+        <div class="metric-footer">
+          <span id="badge-burn-status" class="badge badge-neutral">● Fresh start (0 spend)</span>
+          <span id="label-today-spent">Today: ₹0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCE / UPCOMING EXPENSES CHECKLIST SECTION -->
+    <section class="advance-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <h2 class="card-title" style="color:var(--purple);">⏱️ Advance / Planned Expenses Checklist</h2>
+            <span class="badge badge-purple" id="badge-advance-count">0 Planned</span>
+          </div>
+          <span class="card-subtitle">Add upcoming expenses in advance. <strong>Tick the box (☑)</strong> when the expense occurs to instantly log it to your debit transactions!</span>
+        </div>
+        <button id="btn-add-advance-direct" class="btn-advance" style="padding:0.4rem 0.85rem; font-size:0.82rem;">
+          + New Advance Item
+        </button>
+      </div>
+
+      <div class="advance-list" id="advance-list-container">
+        <!-- Injected by JS -->
+      </div>
+    </section>
+
+    <!-- ANALYTICS SECTION -->
+    <section class="analytics-grid">
+      <!-- Monthly / Daily Expense Chart -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">Expense Trends</h2>
+            <span class="card-subtitle">Monthly and daily spending breakdown</span>
+          </div>
+          <div class="segmented-control" id="chart-timeframe-selector">
+            <button class="segment-btn active" data-range="monthly">6 Months</button>
+            <button class="segment-btn" data-range="daily">Past 14 Days</button>
+          </div>
+        </div>
+        <div class="canvas-container">
+          <canvas id="cashflow-canvas"></canvas>
+          <div id="cashflow-empty-msg" class="chart-empty-state" style="display:flex;">
+            <span>No expenses logged yet.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Category Spending Breakdown Chart -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">Where Pocket Money Goes</h2>
+            <span class="card-subtitle">Category expense distribution</span>
+          </div>
+        </div>
+        <div class="canvas-container" style="height: 190px;">
+          <canvas id="category-donut-canvas"></canvas>
+          <div id="category-empty-msg" class="chart-empty-state" style="display:flex;">
+            <span>No expenses logged yet</span>
+          </div>
+        </div>
+        <!-- Category Legend list -->
+        <div class="category-breakdown-list" id="category-breakdown-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SMART STUDENT INSIGHTS & WISHLIST ROW -->
+    <section class="student-tools-grid">
+      <!-- Smart Student Insights -->
+      <div class="budget-health-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">Smart Student Insights</h2>
+            <span class="card-subtitle">Automated pocket money audit</span>
+          </div>
+          <span class="badge badge-neutral" id="badge-health-score">Budget: Clean Slate</span>
+        </div>
+        <div class="insights-list" id="insights-list-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Student Wishlist & Target Purchases -->
+      <div class="goals-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 class="card-title">Student Wishlist & Targets</h2>
+            <span class="card-subtitle">Plan items you want to buy</span>
+          </div>
+          <button id="btn-add-goal" class="btn-outline" style="padding:0.35rem 0.75rem; font-size:0.8rem;">
+            + Add Item
+          </button>
+        </div>
+        <div class="goals-list" id="goals-list-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- MONTH-WISE TRANSACTIONS SECTION -->
+    <section class="transactions-container">
+      <div class="card-header">
+        <div class="card-title-group">
+          <h2 class="card-title">Monthly Expense Log</h2>
+          <span class="card-subtitle" id="transactions-counter-label">Browse your expenses month by month</span>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-add-tx-secondary" class="btn-primary" style="padding:0.45rem 0.95rem; font-size:0.86rem;">
+            + Log Expense
+          </button>
+        </div>
+      </div>
+
+      <!-- Month-Wise Navigator Bar -->
+      <div class="month-navigator-bar">
+        <div class="month-nav-controls">
+          <button id="btn-prev-month" class="btn-month-nav" title="Previous Month">◀</button>
+          <select id="month-selector-dropdown" class="month-select-dropdown" title="Select Month">
+            <!-- Populated dynamically by JS -->
+          </select>
+          <button id="btn-next-month" class="btn-month-nav" title="Next Month">▶</button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <button id="btn-current-month" class="btn-outline" style="padding:0.4rem 0.8rem; font-size:0.82rem;">
+            📅 Current Month
+          </button>
+          <button id="btn-all-months" class="btn-outline" style="padding:0.4rem 0.8rem; font-size:0.82rem;">
+            📊 All Months (Grouped)
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Month Quick Summary Banner -->
+      <div id="month-summary-banner" class="month-summary-banner">
+        <div class="month-summary-stat">
+          <span class="month-stat-label">Month Total Debits</span>
+          <span class="month-stat-value expense" id="month-summary-expense">₹0.00</span>
+        </div>
+        <div class="month-summary-stat">
+          <span class="month-stat-label">Pocket Money Limit</span>
+          <span class="month-stat-value pocket" id="month-summary-budget">₹0.00</span>
+        </div>
+        <div class="month-summary-stat">
+          <span class="month-stat-label">Remaining Balance</span>
+          <span class="month-stat-value" id="month-summary-remaining">₹0.00</span>
+        </div>
+        <div class="month-summary-stat">
+          <span class="month-stat-label">Entries Count</span>
+          <span class="month-stat-value" id="month-summary-count" style="color:var(--text-secondary);">0 records</span>
+        </div>
+      </div>
+
+      <!-- Filter Controls Bar -->
+      <div class="controls-bar">
+        <!-- Live Search -->
+        <div class="search-wrapper">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="search-input" placeholder="Search by description, tag (#canteen, #books), or note...">
+        </div>
+
+        <div class="filters-group">
+          <!-- Category Filter -->
+          <select id="category-filter" class="filter-select">
+            <option value="all">All Student Categories</option>
+            <!-- Injected by JS -->
+          </select>
+
+          <!-- Sort Filter -->
+          <select id="sort-filter" class="filter-select">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="amount-desc">Amount: High to Low</option>
+            <option value="amount-asc">Amount: Low to High</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Transaction List -->
+      <div id="transactions-list-container" class="transactions-list">
+        <!-- Injected by JS with Month Groups -->
+      </div>
+
+      <!-- Empty State Container -->
+      <div id="empty-state-container" class="empty-state">
+        <div class="empty-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h3 class="empty-title">Ready for your fresh expenses!</h3>
+        <p class="empty-desc">Your tracker is clean and ready. Add an expense or plan an advance expense using the buttons above.</p>
+        <button id="btn-empty-add" class="btn-primary">+ Add First Expense</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- ADD / EDIT ADVANCE EXPENSE MODAL -->
+  <div id="modal-advance" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-advance-title" class="modal-title" style="color:var(--purple);">⏱️ Add Advance / Planned Expense</h3>
+        <button class="btn-close-modal" id="btn-close-advance-modal" title="Close">✕</button>
+      </div>
+      <form id="form-advance">
+        <div class="modal-body">
+          <input type="hidden" id="advance-id">
+
+          <!-- Amount Input with Quick Student Presets -->
+          <div class="form-group">
+            <label class="form-label" for="advance-amount">Expected Amount</label>
+            <div class="input-with-symbol">
+              <span class="input-symbol" id="advance-modal-curr-symbol">₹</span>
+              <input type="number" id="advance-amount" class="form-input" placeholder="0.00" step="any" min="0.01" required>
+            </div>
+            <div class="preset-chips">
+              <button type="button" class="chip-btn" data-preset-adv="50">+50</button>
+              <button type="button" class="chip-btn" data-preset-adv="100">+100</button>
+              <button type="button" class="chip-btn" data-preset-adv="200">+200</button>
+              <button type="button" class="chip-btn" data-preset-adv="500">+500</button>
+              <button type="button" class="chip-btn" data-preset-adv="1000">+1,000</button>
+              <button type="button" class="chip-btn" data-preset-adv="2000">+2,000</button>
+            </div>
+          </div>
+
+          <!-- Description / Title -->
+          <div class="form-group">
+            <label class="form-label" for="advance-title-input">Planned Expense Title</label>
+            <input type="text" id="advance-title-input" class="form-input" placeholder="e.g., Exam Fee, PG Rent, Book Purchase, Recharge" required>
+          </div>
+
+          <!-- Category & Expected Date Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="advance-category">Category</label>
+              <select id="advance-category" class="form-select" required>
+                <!-- Dynamically loaded with student categories -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="advance-date">Due / Expected Date</label>
+              <input type="date" id="advance-date" class="form-input" required>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label class="form-label" for="advance-notes">Reminder Notes (Optional)</label>
+            <input type="text" id="advance-notes" class="form-input" placeholder="e.g., Pay before 15th to avoid late fee">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btn-cancel-advance-modal">Cancel</button>
+          <button type="submit" class="btn-advance">Save Advance Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT EXPENSE MODAL -->
+  <div id="modal-transaction" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-tx-title" class="modal-title">Log Expense</h3>
+        <button class="btn-close-modal" id="btn-close-tx-modal" title="Close">✕</button>
+      </div>
+      <form id="form-transaction">
+        <div class="modal-body">
+          <input type="hidden" id="tx-id">
+
+          <!-- Amount Input with Quick Student Presets -->
+          <div class="form-group">
+            <label class="form-label" for="tx-amount">Expense Amount</label>
+            <div class="input-with-symbol">
+              <span class="input-symbol" id="tx-modal-curr-symbol">₹</span>
+              <input type="number" id="tx-amount" class="form-input" placeholder="0.00" step="any" min="0.01" required>
+            </div>
+            <!-- Quick Chips for Students -->
+            <div class="preset-chips">
+              <button type="button" class="chip-btn" data-preset="20">+20</button>
+              <button type="button" class="chip-btn" data-preset="50">+50</button>
+              <button type="button" class="chip-btn" data-preset="100">+100</button>
+              <button type="button" class="chip-btn" data-preset="200">+200</button>
+              <button type="button" class="chip-btn" data-preset="500">+500</button>
+              <button type="button" class="chip-btn" data-preset="1000">+1,000</button>
+            </div>
+          </div>
+
+          <!-- Description / Title -->
+          <div class="form-group">
+            <label class="form-label" for="tx-title-input">Expense Description</label>
+            <input type="text" id="tx-title-input" class="form-input" placeholder="e.g., Canteen Lunch, Notebook & Pen, Chai, Metro pass" required>
+          </div>
+
+          <!-- Category & Payment Method Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tx-category">Category</label>
+              <select id="tx-category" class="form-select" required>
+                <!-- Dynamically loaded with student categories -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tx-payment-method">Payment Method</label>
+              <select id="tx-payment-method" class="form-select">
+                <option value="UPI (GPay / PhonePe / Paytm)">UPI (GPay / PhonePe / Paytm)</option>
+                <option value="Cash">Cash</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="NetBanking">NetBanking</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Date & Time Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tx-date">Date</label>
+              <input type="date" id="tx-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tx-time">Time (Optional)</label>
+              <input type="time" id="tx-time" class="form-input">
+            </div>
+          </div>
+
+          <!-- Notes & Quick Student Tags -->
+          <div class="form-group">
+            <label class="form-label" for="tx-notes">Tags / Notes (Optional)</label>
+            <input type="text" id="tx-notes" class="form-input" placeholder="e.g. #canteen, with Rahul, college project">
+            <div class="tag-chips">
+              <button type="button" class="tag-btn" data-tag="#canteen">#canteen</button>
+              <button type="button" class="tag-btn" data-tag="#chai">#chai</button>
+              <button type="button" class="tag-btn" data-tag="#books">#books</button>
+              <button type="button" class="tag-btn" data-tag="#swiggy">#swiggy</button>
+              <button type="button" class="tag-btn" data-tag="#metro">#metro</button>
+              <button type="button" class="tag-btn" data-tag="#hostel">#hostel</button>
+              <button type="button" class="tag-btn" data-tag="#recharge">#recharge</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btn-cancel-tx-modal">Cancel</button>
+          <button type="submit" class="btn-primary" id="btn-save-tx">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- POCKET MONEY / MONTHLY ALLOWANCE MODAL -->
+  <div id="modal-budget" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Monthly Pocket Money / Allowance</h3>
+        <button class="btn-close-modal" id="btn-close-budget-modal" title="Close">✕</button>
+      </div>
+      <form id="form-budget">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="budget-limit-input">Monthly Pocket Money / Allowance</label>
+            <div class="input-with-symbol">
+              <span class="input-symbol" id="budget-curr-symbol">₹</span>
+              <input type="number" id="budget-limit-input" class="form-input" min="0" step="any" placeholder="e.g. 5000" required>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:0.3rem;">
+              Set your monthly pocket money to automatically calculate your <strong>Safe Daily Spending Limit</strong>!
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btn-cancel-budget-modal">Cancel</button>
+          <button type="submit" class="btn-primary">Save Allowance</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- WISHLIST / TARGET SAVINGS MODAL -->
+  <div id="modal-goal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-goal-title" class="modal-title">New Wishlist Item / Target</h3>
+        <button class="btn-close-modal" id="btn-close-goal-modal" title="Close">✕</button>
+      </div>
+      <form id="form-goal">
+        <div class="modal-body">
+          <input type="hidden" id="goal-id">
+          <div class="form-group">
+            <label class="form-label" for="goal-name-input">Item Name</label>
+            <input type="text" id="goal-name-input" class="form-input" placeholder="e.g. Noise Cancelling Headphones, College Trip, Coding Course" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="goal-target-input">Target Price</label>
+              <div class="input-with-symbol">
+                <span class="input-symbol" id="goal-curr-symbol">₹</span>
+                <input type="number" id="goal-target-input" class="form-input" min="1" step="any" placeholder="3000" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-current-input">Already Saved (Optional)</label>
+              <div class="input-with-symbol">
+                <span class="input-symbol" id="goal-curr-symbol-2">₹</span>
+                <input type="number" id="goal-current-input" class="form-input" min="0" step="any" placeholder="0" value="0">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btn-cancel-goal-modal">Cancel</button>
+          <button type="submit" class="btn-primary">Save to Wishlist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DATA MANAGEMENT & EXPORT MODAL -->
+  <div id="modal-data" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Data Backup & Export</h3>
+        <button class="btn-close-modal" id="btn-close-data-modal" title="Close">✕</button>
+      </div>
+      <div class="modal-body" style="gap: 1.25rem;">
+        <!-- Export Section -->
+        <div class="form-group">
+          <label class="form-label">Export Data</label>
+          <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+            <button id="btn-export-csv" class="btn-outline" style="flex:1;">
+              Export CSV Spreadsheet
+            </button>
+            <button id="btn-export-json" class="btn-outline" style="flex:1;">
+              Export JSON Backup
+            </button>
+          </div>
+        </div>
+
+        <!-- Import Section -->
+        <div class="form-group">
+          <label class="form-label">Import JSON Backup</label>
+          <input type="file" id="import-json-file" accept=".json" class="form-input" style="padding:0.45rem;">
+        </div>
+
+        <!-- Reset Section -->
+        <div class="form-group" style="border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
+          <label class="form-label">Quick Actions</label>
+          <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+            <button id="btn-load-demo-data" class="btn-outline" style="flex:1;">
+              Load Sample Student Data
+            </button>
+            <button id="btn-clear-all-data" class="btn-outline" style="flex:1; color:var(--danger); border-color:var(--danger-border);">
+              Reset All to 0 (Fresh Start)
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-primary" id="btn-done-data-modal">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- SCRIPT -->
+  <script src="app.js"></script>
+</body>
+</html>
